@@ -7,50 +7,80 @@
   <link rel="stylesheet" href="styles.css" />
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-  <header>
-    <h1>Coach Mission Control</h1>
-    <nav class="tab-menu">
+<body class="bg-slate-100">
+  <header class="bg-amber-100 p-4 shadow">
+    <h1 class="text-2xl font-bold">Coach Mission Control</h1>
+    <nav class="tab-menu mt-2 space-x-2">
       <button class="tab-button active" data-tab="coaching">🧭 Coaching</button>
       <button class="tab-button" data-tab="methoden">🧰 Methoden</button>
       <button class="tab-button" data-tab="admin">📂 Admin</button>
     </nav>
   </header>
 
-  <main>
+  <main class="p-4">
     <section id="coaching" class="tab-content active">
-      <h2>🧭 Coachingbereich</h2>
-      <!-- Beginne hier mit deinem bestehenden Coaching-System -->
-      <div id="coaching-content" class="p-4 border border-gray-300 rounded bg-white shadow">
-        <form class="space-y-4">
-          <div>
-            <label for="clientInput" class="block font-medium">Input des Coachees</label>
-            <textarea id="clientInput" class="w-full p-2 border rounded" rows="4" placeholder="Was beschäftigt dich gerade?"></textarea>
+      <h2 class="text-xl font-semibold mb-2">🧭 Coachingbereich</h2>
+      <div id="coaching-content" class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <!-- Linke Seite: Prompt Repository -->
+        <div class="bg-white border rounded shadow p-4">
+          <h3 class="font-bold text-lg mb-2">📕 Prompt Repository</h3>
+          <p class="text-sm text-gray-600 mb-2">Prompts verfügbar: 47</p>
+          <p class="text-xs text-gray-500 mb-4">Kategorien: GT, SF, DIAG, LÖS, META, AVA, WARN, QK, PAAR, GRUPPE, LIVE, MOBIL, EI, WERTE, STÄRKE</p>
+          <label class="block text-sm mb-1">Filter nach Kategorie:</label>
+          <select class="w-full border p-1 rounded mb-4">
+            <option>Alle Kategorien</option>
+          </select>
+          <div class="space-y-2">
+            <div class="p-2 border rounded bg-gray-50">
+              <span class="text-blue-600 font-bold">GT1</span><br/>
+              <strong>ERSTANLIEGEN</strong> – Offene Eingangsfrage zur Problemdefinition<br/>
+              <span class="text-sm">Ich habe folgendes Anliegen: [PROBLEMBESCHREIBUNG]...</span>
+            </div>
+            <div class="p-2 border rounded bg-gray-50">
+              <span class="text-blue-600 font-bold">GT2</span><br/>
+              <strong>ZUSATZINFORMATIONEN</strong> – Strukturierte Situationsanalyse<br/>
+              <span class="text-sm">Hier noch zusätzliche Informationen...</span>
+            </div>
+            <div class="p-2 border rounded bg-gray-50">
+              <span class="text-blue-600 font-bold">GT3</span><br/>
+              <strong>SYMBOLBILD-ANALYSE</strong> – Unbewusste Aspekte durch Metaphern<br/>
+              <span class="text-sm">Ich habe folgendes Bild gewählt...</span>
+            </div>
           </div>
-          <div>
-            <label for="coachNote" class="block font-medium">Anmerkungen des Coaches (nicht sichtbar für Coachee)</label>
-            <textarea id="coachNote" class="w-full p-2 border rounded bg-gray-100" rows="3" placeholder="Meta-Ebene, Tools, Methodenwahl ..."></textarea>
+        </div>
+
+        <!-- Rechte Seite: Prompt Generator -->
+        <div class="bg-white border rounded shadow p-4">
+          <h3 class="font-bold text-lg mb-2">🧠 Geissler Mega-Prompts (A–E System)</h3>
+          <label class="block text-sm mb-1">Phase:</label>
+          <select class="w-full border p-1 rounded mb-2">
+            <option>Phase 1: Problem & Ziel</option>
+          </select>
+          <label class="block text-sm mb-1">Problem-Typ:</label>
+          <select class="w-full border p-1 rounded mb-4">
+            <option>Führung</option>
+          </select>
+          <button class="bg-violet-600 text-white px-4 py-2 rounded w-full mb-4">🌟 Mega-Prompt generieren (A–E System)</button>
+
+          <h4 class="font-semibold mb-1">📝 Prompt Editor</h4>
+          <textarea class="w-full p-2 border rounded mb-2" rows="5" placeholder="Wählen Sie einen Prompt oder geben Sie einen eigenen ein..."></textarea>
+          <div class="flex justify-between gap-2">
+            <button class="bg-blue-700 text-white px-4 py-2 rounded">📩 An Coachee senden</button>
+            <button class="bg-gray-700 text-white px-4 py-2 rounded">🔗 Kollaborations-Fenster öffnen</button>
+            <button class="bg-gray-300 text-black px-4 py-2 rounded">🧹 Leeren</button>
           </div>
-          <div class="flex space-x-4">
-            <button type="button" onclick="submitCoachee()" class="bg-emerald-600 text-white px-4 py-2 rounded">Coachee-Eingabe senden</button>
-            <button type="button" onclick="submitCoach()" class="bg-gray-600 text-white px-4 py-2 rounded">Coach-Eingabe senden</button>
-          </div>
-        </form>
-        <div class="mt-6">
-          <h3 class="font-semibold">KI-Antwort</h3>
-          <div id="aiResponse" class="p-3 bg-gray-50 border rounded">Noch keine Antwort.</div>
         </div>
       </div>
     </section>
 
     <section id="methoden" class="tab-content">
-      <h2>🧰 Methoden & Modelle</h2>
-      <p>Hier entsteht eine Auswahl von Coaching-Richtungen, Tools und Prompts.</p>
+      <h2 class="text-xl font-semibold">🧰 Methoden & Modelle</h2>
+      <p class="text-gray-700">Hier entsteht eine Auswahl von Coaching-Richtungen, Tools und Prompts.</p>
     </section>
 
     <section id="admin" class="tab-content">
-      <h2>📂 Admin-Bereich</h2>
-      <p>Hier folgt dein Upload- und Dokumentationsbereich – z. B. nach Klient:in sortiert.</p>
+      <h2 class="text-xl font-semibold">📂 Admin-Bereich</h2>
+      <p class="text-gray-700">Hier folgt dein Upload- und Dokumentationsbereich – z. B. nach Klient:in sortiert.</p>
     </section>
   </main>
 
@@ -66,16 +96,6 @@
         document.getElementById(tab).classList.add('active');
       });
     });
-
-    function submitCoachee() {
-      const input = document.getElementById('clientInput').value;
-      document.getElementById('aiResponse').innerText = `KI (Coachee-Modus): Du hast gesagt – «${input}». Ich höre dich.`;
-    }
-
-    function submitCoach() {
-      const note = document.getElementById('coachNote').value;
-      document.getElementById('aiResponse').innerText = `KI (Coach-Modus): Meta-Ebene verarbeitet – «${note}». Vorschlag folgt.`;
-    }
   </script>
 </body>
 </html>
