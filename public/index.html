@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Coach Mission Control</title>
   <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body>
   <header>
@@ -19,9 +20,26 @@
   <main>
     <section id="coaching" class="tab-content active">
       <h2>🧭 Coachingbereich</h2>
-      <!-- Hier kommt dein funktionierendes Coaching-System rein -->
-      <div id="coaching-content">
-        <p>Hier kannst du dein bestehendes Coach-KI-Coachee-System einfügen.</p>
+      <!-- Beginne hier mit deinem bestehenden Coaching-System -->
+      <div id="coaching-content" class="p-4 border border-gray-300 rounded bg-white shadow">
+        <form class="space-y-4">
+          <div>
+            <label for="clientInput" class="block font-medium">Input des Coachees</label>
+            <textarea id="clientInput" class="w-full p-2 border rounded" rows="4" placeholder="Was beschäftigt dich gerade?"></textarea>
+          </div>
+          <div>
+            <label for="coachNote" class="block font-medium">Anmerkungen des Coaches (nicht sichtbar für Coachee)</label>
+            <textarea id="coachNote" class="w-full p-2 border rounded bg-gray-100" rows="3" placeholder="Meta-Ebene, Tools, Methodenwahl ..."></textarea>
+          </div>
+          <div class="flex space-x-4">
+            <button type="button" onclick="submitCoachee()" class="bg-emerald-600 text-white px-4 py-2 rounded">Coachee-Eingabe senden</button>
+            <button type="button" onclick="submitCoach()" class="bg-gray-600 text-white px-4 py-2 rounded">Coach-Eingabe senden</button>
+          </div>
+        </form>
+        <div class="mt-6">
+          <h3 class="font-semibold">KI-Antwort</h3>
+          <div id="aiResponse" class="p-3 bg-gray-50 border rounded">Noch keine Antwort.</div>
+        </div>
       </div>
     </section>
 
@@ -36,6 +54,28 @@
     </section>
   </main>
 
-  <script src="ui.js"></script>
+  <script>
+    document.querySelectorAll('.tab-button').forEach(button => {
+      button.addEventListener('click', () => {
+        const tab = button.dataset.tab;
+
+        document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(section => section.classList.remove('active'));
+
+        button.classList.add('active');
+        document.getElementById(tab).classList.add('active');
+      });
+    });
+
+    function submitCoachee() {
+      const input = document.getElementById('clientInput').value;
+      document.getElementById('aiResponse').innerText = `KI (Coachee-Modus): Du hast gesagt – «${input}». Ich höre dich.`;
+    }
+
+    function submitCoach() {
+      const note = document.getElementById('coachNote').value;
+      document.getElementById('aiResponse').innerText = `KI (Coach-Modus): Meta-Ebene verarbeitet – «${note}». Vorschlag folgt.`;
+    }
+  </script>
 </body>
 </html>
