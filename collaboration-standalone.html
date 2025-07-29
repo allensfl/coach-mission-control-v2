@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coaching Session</title>
+    <style>
+        /* ===== INLINE CSS - Alle Styles in einer Datei ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            line-height: 1.6;
+            padding: 0;
+            margin: 0;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .collaboration-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.98);
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.1);
+        }
+
+        /* ===== HEADER ===== */
+        .collaboration-header {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
+        }
+
+        .collaboration-header h1 {
+            margin: 0;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .session-info {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 5px;
+        }
+
+        .session-info span {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        #sessionStatus {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        #sessionTime {
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        .collaboration-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .messages-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+        }
+
+        .welcome-message {
+            margin-bottom: 20px;
+        }
+
+        /* ===== MESSAGE BUBBLES ===== */
+        .message-bubble {
+            max-width: 80%;
+            padding: 18px 22px;
+            border-radius: 18px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .message-bubble.coach {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            margin-left: 0;
+            margin-right: auto;
+            border-bottom-left-radius: 8px;
+        }
+
+        .message-bubble.coachee {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            margin-left: auto;
+            margin-right: 0;
+            border-bottom-right-radius: 8px;
+        }
+
+        .message-bubble.system {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            margin: 0 auto;
+            text-align: center;
+            border-radius: 25px;
+        }
+
+        .message-bubble.ai, .message-bubble.kicoach, .message-bubble.ki-coach {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            color: white;
+            margin-left: 0;
+            margin-right: auto;
+            border-bottom-left-radius: 8px;
+        }
+
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        .message-sender {
+            font-weight: bold;
+        }
+
+        .message-time {
+            font-size: 0.75rem;
+            opacity: 0.7;
+        }
+
+        .message-content {
+            line-height: 1.5;
+        }
+
+        .message-content p {
+            margin: 0 0 10px 0;
+        }
+
+        .message-content p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* ===== INPUT AREA ===== */
+        .input-area {
+            background: white;
+            border-top: 1px solid #e2e8f0;
+            padding: 20px;
+            box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .input-container {
+            max-width: 100%;
+        }
+
+        #responseInput {
+            width: 100%;
+            min-height: 80px;
+            max-height: 150px;
+            padding: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            line-height: 1.4;
+            resize: vertical;
+            margin-bottom: 15px;
+            transition: border-color 0.3s ease;
+            font-family: inherit;
+        }
+
+        #responseInput:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .input-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+        }
+
+        .send-response-btn {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .send-response-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+        }
+
+        .send-response-btn:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .clear-input-btn {
+            background: #6b7280;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .clear-input-btn:hover {
+            background: #4b5563;
+            transform: translateY(-2px);
+        }
+
+        /* ===== FOOTER ===== */
+        .collaboration-footer {
+            background: #f8fafc;
+            border-top: 1px solid #e2e8f0;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            color: #64748b;
+        }
+
+        .footer-info {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        /* ===== ANIMATIONS ===== */
+        @keyframes slideIn {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .collaboration-container {
+                margin: 0;
+                border-radius: 0;
+            }
+            
+            .collaboration-header {
+                padding: 15px 20px;
+            }
+            
+            .collaboration-header h1 {
+                font-size: 1.4rem;
+            }
+            
+            .messages-area {
+                padding: 15px;
+            }
+            
+            .message-bubble {
+                max-width: 90%;
+                padding: 15px 18px;
+            }
+            
+            .input-area {
+                padding: 15px;
+            }
+            
+            .input-actions {
+                flex-direction: column;
+            }
+            
+            .send-response-btn,
+            .clear-input-btn {
+                width: 100%;
+            }
+            
+            .collaboration-footer {
+                padding: 10px 20px;
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+            
+            .footer-info {
+                flex-direction: column;
+                gap: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="collaboration-container">
+        <header class="collaboration-header">
+            <h1>🤝 Coaching Session</h1>
+            <div class="session-info">
+                <span id="sessionStatus">Verbinden...</span>
+                <span id="sessionTime">00:00</span>
+            </div>
+        </header>
+
+        <main class="collaboration-main">
+            <div class="messages-area" id="messagesArea">
+                <div class="welcome-message">
+                    <div class="message-bubble system">
+                        <p>🎯 <strong>Willkommen zu Ihrer Coaching-Session!</strong></p>
+                        <p>Hier findet der Dialog zwischen Ihnen und Ihrem Coach statt. Sie können jederzeit antworten und Fragen stellen.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="input-area">
+                <div class="input-container">
+                    <textarea 
+                        id="responseInput" 
+                        placeholder="Ihre Antwort oder Frage..."
+                        rows="3"
+                    ></textarea>
+                    <div class="input-actions">
+                        <button onclick="sendResponse()" class="send-response-btn" id="sendBtn">
+                            📤 Antworten
+                        </button>
+                        <button onclick="clearInput()" class="clear-input-btn">
+                            🗑️ Leeren
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="collaboration-footer">
+            <div class="footer-info">
+                <span>🔒 Vertrauliche Coaching-Session</span>
+                <span id="messageCount">0 Nachrichten</span>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        /* ===== INLINE JAVASCRIPT - Alles in einer Datei ===== */
+        
+        // === COMMUNICATION CLASS ===
+        class CoachingCommunication {
+            constructor() {
+                this.storageKey = 'coaching_messages';
+                this.statusKey = 'coaching_status';
+                this.sessionKey = 'coaching_session';
+                this.listeners = [];
+                this.statusChangeListeners = [];
+                
+                // Erkennung: Dies ist das Collaboration Window
+                this.isCoach = false;
+                this.isCollaboration = true;
+                
+                console.log('🤝 Collaboration Communication initialized');
+                
+                this.initializeSession();
+                this.setupStorageListener();
+            }
+
+            initializeSession() {
+                console.log('🚀 Initializing collaboration session');
+                
+                const session = this.getSession();
+                if (session) {
+                    session.status = 'connected';
+                    this.setSession(session);
+                    this.setStatus('Verbunden');
+                    console.log('🤝 Coachee connected to existing session');
+                } else {
+                    console.log('⚠️ No session found, creating new one');
+                    const newSession = {
+                        id: this.generateSessionId(),
+                        startTime: new Date().toISOString(),
+                        coach: 'Coach',
+                        coachee: 'Coachee',
+                        status: 'connected'
+                    };
+                    this.setSession(newSession);
+                    this.setStatus('Verbunden');
+                }
+            }
+
+            generateSessionId() {
+                return 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            }
+
+            getSession() {
+                try {
+                    const data = localStorage.getItem(this.sessionKey);
+                    return data ? JSON.parse(data) : null;
+                } catch (e) {
+                    console.error('Fehler beim Laden der Session:', e);
+                    return null;
+                }
+            }
+
+            setSession(session) {
+                try {
+                    localStorage.setItem(this.sessionKey, JSON.stringify(session));
+                } catch (e) {
+                    console.error('Fehler beim Speichern der Session:', e);
+                }
+            }
+
+            getMessages() {
+                try {
+                    const data = localStorage.getItem(this.storageKey);
+                    return data ? JSON.parse(data) : [];
+                } catch (e) {
+                    console.error('Fehler beim Laden der Nachrichten:', e);
+                    return [];
+                }
+            }
+
+            setMessages(messages) {
+                try {
+                    const messageString = JSON.stringify(messages);
+                    localStorage.setItem(this.storageKey, messageString);
+                    
+                    setTimeout(() => {
+                        this.notifyListeners(messages);
+                    }, 10);
+                    
+                    console.log('💾 Messages saved:', messages.length);
+                } catch (e) {
+                    console.error('Fehler beim Speichern der Nachrichten:', e);
+                }
+            }
+
+            addMessage(sender, content, type = 'text') {
+                const messages = this.getMessages();
+                const message = {
+                    id: this.generateMessageId(),
+                    sender: sender,
+                    content: content,
+                    type: type,
+                    timestamp: new Date().toISOString(),
+                    read: false
+                };
+                
+                messages.push(message);
+                this.setMessages(messages);
+                
+                console.log(`💬 Neue Nachricht von ${sender}:`, content);
+                return message;
+            }
+
+            generateMessageId() {
+                return 'msg_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
+            }
+
+            getStatus() {
+                return localStorage.getItem(this.statusKey) || 'Getrennt';
+            }
+
+            setStatus(status) {
+                localStorage.setItem(this.statusKey, status);
+                this.notifyStatusChange(status);
+            }
+
+            setupStorageListener() {
+                console.log('🔧 Setting up storage listener for collaboration');
+                
+                // Storage events
+                window.addEventListener('storage', (e) => {
+                    console.log('📨 Storage event received:', e.key);
+                    
+                    if (e.key === this.storageKey) {
+                        const messages = e.newValue ? JSON.parse(e.newValue) : [];
+                        this.notifyListeners(messages);
+                        console.log('📨 Storage event processed:', messages.length, 'messages');
+                    } else if (e.key === this.statusKey) {
+                        this.notifyStatusChange(e.newValue);
+                    }
+                });
+
+                // Aggressive polling für collaboration window
+                this.lastMessageCount = 0;
+                
+                const pollInterval = setInterval(() => {
+                    const currentMessages = this.getMessages();
+                    if (currentMessages.length !== this.lastMessageCount) {
+                        console.log('🔄 Polling detected change:', this.lastMessageCount, '->', currentMessages.length);
+                        this.lastMessageCount = currentMessages.length;
+                        this.notifyListeners(currentMessages);
+                    }
+                }, 500);
+                
+                // Initial load
+                setTimeout(() => {
+                    const initialMessages = this.getMessages();
+                    console.log('🏁 Initial message load:', initialMessages.length);
+                    this.notifyListeners(initialMessages);
+                }, 100);
+            }
+
+            onMessagesUpdate(callback) {
+                this.listeners.push(callback);
+                // Sofort mit aktuellen Nachrichten aufrufen
+                callback(this.getMessages());
+            }
+
+            notifyListeners(messages) {
+                this.listeners.forEach(callback => {
+                    try {
+                        callback(messages);
+                    } catch (e) {
+                        console.error('Fehler beim Benachrichtigen des Listeners:', e);
+                    }
+                });
+            }
+
+            onStatusChange(callback) {
+                this.statusChangeListeners = this.statusChangeListeners || [];
+                this.statusChangeListeners.push(callback);
+                callback(this.getStatus());
+            }
+
+            notifyStatusChange(status) {
+                if (this.statusChangeListeners) {
+                    this.statusChangeListeners.forEach(callback => {
+                        try {
+                            callback(status);
+                        } catch (e) {
+                            console.error('Fehler beim Benachrichtigen des Status-Listeners:', e);
+                        }
+                    });
+                }
+                
+                const statusElement = document.getElementById('sessionStatus');
+                if (statusElement) {
+                    statusElement.textContent = status;
+                }
+            }
+
+            formatTimestamp(timestamp) {
+                const date = new Date(timestamp);
+                return date.toLocaleTimeString('de-DE', {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+            }
+        }
+
+        // === COLLABORATION INTERFACE ===
+        const CollaborationInterface = {
+            messageCount: 0,
+            
+            init() {
+                this.setupMessageMonitoring();
+                this.setupInputHandling();
+                this.setupSessionTimer();
+                
+                console.log('🤝 Collaboration Interface initialisiert');
+            },
+
+            setupMessageMonitoring() {
+                console.log('📋 Setting up message monitoring');
+                
+                if (!window.coachingComm) {
+                    console.error('❌ Kommunikation nicht verfügbar');
+                    return;
+                }
+
+                // Status-Updates
+                window.coachingComm.onStatusChange((status) => {
+                    console.log('📊 Status update:', status);
+                    this.updateSessionStatus(status);
+                });
+
+                // Nachrichten-Updates
+                window.coachingComm.onMessagesUpdate((messages) => {
+                    console.log('📨 Message update received:', messages.length, 'messages');
+                    this.displayMessages(messages);
+                    this.updateMessageCount(messages.length);
+                });
+
+                // Force initial load
+                setTimeout(() => {
+                    const initialMessages = window.coachingComm.getMessages();
+                    console.log('🏁 Force loading initial messages:', initialMessages.length);
+                    if (initialMessages.length > 0) {
+                        this.displayMessages(initialMessages);
+                        this.updateMessageCount(initialMessages.length);
+                    }
+                }, 1000);
+            },
+
+            setupInputHandling() {
+                const input = document.getElementById('responseInput');
+                const sendBtn = document.getElementById('sendBtn');
+
+                if (input && sendBtn) {
+                    input.addEventListener('input', (e) => {
+                        const value = e.target.value;
+                        sendBtn.disabled = !value.trim();
+                    });
+
+                    input.addEventListener('keydown', (e) => {
+                        if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                            this.sendResponse();
+                        }
+                    });
+
+                    // Auto-resize textarea
+                    input.addEventListener('input', () => {
+                        input.style.height = 'auto';
+                        input.style.height = Math.min(input.scrollHeight, 150) + 'px';
+                    });
+                }
+            },
+
+            setupSessionTimer() {
+                // Simple timer
+                let startTime = Date.now();
+                setInterval(() => {
+                    const elapsed = Math.floor((Date.now() - startTime) / 1000);
+                    const minutes = Math.floor(elapsed / 60);
+                    const seconds = elapsed % 60;
+                    const timerElement = document.getElementById('sessionTime');
+                    if (timerElement) {
+                        timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                    }
+                }, 1000);
+            },
+
+            displayMessages(messages) {
+                const container = document.getElementById('messagesArea');
+                if (!container) return;
+
+                console.log('📋 Displaying messages:', messages.length);
+
+                if (messages.length === 0) {
+                    container.innerHTML = `
+                        <div class="welcome-message">
+                            <div class="message-bubble system">
+                                <p>🎯 <strong>Willkommen zu Ihrer Coaching-Session!</strong></p>
+                                <p>Hier findet der Dialog zwischen Ihnen und Ihrem Coach statt. Sie können jederzeit antworten und Fragen stellen.</p>
+                            </div>
+                        </div>
+                    `;
+                    return;
+                }
+
+                // Container neu aufbauen
+                container.innerHTML = '';
+                
+                messages.forEach(message => {
+                    const messageElement = this.createMessageElement(message);
+                    container.appendChild(messageElement);
+                });
+
+                this.scrollToBottom();
+                console.log('✅ Messages displayed successfully');
+            },
+
+            createMessageElement(message) {
+                const time = window.coachingComm.formatTimestamp(message.timestamp);
+                const senderClass = this.getSenderClass(message.sender);
+                const senderDisplay = this.getSenderDisplay(message.sender);
+                
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message-bubble ${senderClass}`;
+                messageDiv.setAttribute('data-message-id', message.id);
+                messageDiv.innerHTML = `
+                    <div class="message-header">
+                        <span class="message-sender">${senderDisplay}</span>
+                        <span class="message-time">${time}</span>
+                    </div>
+                    <div class="message-content">
+                        ${this.formatMessageContent(message.content)}
+                    </div>
+                `;
+                
+                return messageDiv;
+            },
+
+            getSenderClass(sender) {
+                const lowerSender = sender.toLowerCase();
+                if (lowerSender.includes('coach') && !lowerSender.includes('coachee')) return 'coach';
+                if (lowerSender.includes('coachee')) return 'coachee';
+                if (lowerSender.includes('ki') || lowerSender.includes('ai')) return 'ai';
+                return 'system';
+            },
+
+            getSenderDisplay(sender) {
+                const mapping = {
+                    'coach': '👨‍💼 Coach',
+                    'coachee': '👤 Sie',
+                    'system': '🎯 System',
+                    'ai': '🤖 KI-Coach',
+                    'kicoach': '🤖 KI-Coach',
+                    'ki-coach': '🤖 KI-Coach'
+                };
+                
+                const senderClass = this.getSenderClass(sender);
+                return mapping[senderClass] || sender;
+            },
+
+            formatMessageContent(content) {
+                return this.escapeHtml(content)
+                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                    .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                    .replace(/\n/g, '<br>');
+            },
+
+            escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            },
+
+            sendResponse() {
+                const input = document.getElementById('responseInput');
+                const content = input?.value?.trim();
+                
+                if (!content) {
+                    alert('Bitte geben Sie eine Antwort ein.');
+                    return;
+                }
+
+                if (!window.coachingComm) {
+                    alert('Kommunikation nicht verfügbar.');
+                    return;
+                }
+
+                // Nachricht senden
+                window.coachingComm.addMessage('Coachee', content);
+                
+                // Input leeren
+                this.clearInput();
+                
+                console.log('✅ Antwort gesendet:', content);
+            },
+
+            clearInput() {
+                const input = document.getElementById('responseInput');
+                const sendBtn = document.getElementById('sendBtn');
+                
+                if (input) {
+                    input.value = '';
+                    input.style.height = 'auto';
+                    input.focus();
+                }
+                
+                if (sendBtn) {
+                    sendBtn.disabled = true;
+                }
+            },
+
+            updateSessionStatus(status) {
+                const statusElement = document.getElementById('sessionStatus');
+                if (statusElement) {
+                    statusElement.textContent = status;
+                    
+                    // Status-Farben
+                    if (status.includes('Verbunden') || status.includes('connected')) {
+                        statusElement.style.background = 'rgba(16, 185, 129, 0.2)';
+                        statusElement.style.color = '#059669';
+                    } else if (status.includes('Warte') || status.includes('waiting')) {
+                        statusElement.style.background = 'rgba(245, 158, 11, 0.2)';
+                        statusElement.style.color = '#d97706';
+                    } else {
+                        statusElement.style.background = 'rgba(107, 114, 128, 0.2)';
+                        statusElement.style.color = '#6b7280';
+                    }
+                }
+            },
+
+            updateMessageCount(count) {
+                this.messageCount = count;
+                const countElement = document.getElementById('messageCount');
+                if (countElement) {
+                    countElement.textContent = `${count} Nachrichten`;
+                }
+            },
+
+            scrollToBottom() {
+                const container = document.getElementById('messagesArea');
+                if (container) {
+                    container.scrollTop = container.scrollHeight;
+                }
+            }
+        };
+
+        // === GLOBALE FUNKTIONEN ===
+        function sendResponse() {
+            CollaborationInterface.sendResponse();
+        }
+
+        function clearInput() {
+            CollaborationInterface.clearInput();
+        }
+
+        // Debug-Funktionen
+        function debugCollaboration() {
+            console.log('=== COLLABORATION DEBUG ===');
+            console.log('Window location:', window.location.href);
+            console.log('CoachingComm available:', !!window.coachingComm);
+            if (window.coachingComm) {
+                console.log('Messages:', window.coachingComm.getMessages());
+                console.log('Status:', window.coachingComm.getStatus());
+                console.log('Session:', window.coachingComm.getSession());
+            }
+            console.log('Messages container:', document.getElementById('messagesArea'));
+        }
+
+        function forceReloadMessages() {
+            if (window.coachingComm) {
+                const messages = window.coachingComm.getMessages();
+                console.log('🔄 Force reloading messages:', messages);
+                CollaborationInterface.displayMessages(messages);
+            }
+        }
+
+        // === INITIALISIERUNG ===
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🔄 DOM Content Loaded in standalone collaboration window');
+            
+            // Kurze Verzögerung für vollständige Initialisierung
+            setTimeout(() => {
+                console.log('🚀 Starting initialization');
+                
+                // Communication initialisieren
+                window.coachingComm = new CoachingCommunication();
+                
+                // Interface initialisieren
+                CollaborationInterface.init();
+                console.log('🤝 Standalone Collaboration Interface bereit');
+                
+                // Debug verfügbar machen
+                window.debugCollaboration = debugCollaboration;
+                window.forceReloadMessages = forceReloadMessages;
+                
+            }, 100);
+        });
+
+        // Cleanup
+        window.addEventListener('beforeunload', function() {
+            console.log('👋 Collaboration window closing');
+        });
+    </script>
+</body>
+</html>

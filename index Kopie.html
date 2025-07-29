@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coach Mission Control</title>
+    <link rel="stylesheet" href="css/common-gray.css">
+<link rel="stylesheet" href="css/coach-gray.css">
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 Coach Mission Control</h1>
+        
+        <div class="tab-navigation">
+            <button class="tab-btn active" data-tab="clients">👥 Klienten</button>
+            <button class="tab-btn" data-tab="coaching">🎯 Coaching</button>
+            <button class="tab-btn" data-tab="collaboration">🤝 Kollaboration</button>
+            <button class="tab-btn" data-tab="coachki" style="background: linear-gradient(135deg, #f59e0b, #d97706); color: white;">🧠 Coach-KI</button>
+        </div>
+
+        <!-- Klienten Tab -->
+        <div id="clientsTab" class="tab-content active">
+            <h2 style="margin-bottom: 25px; color: #1e293b;">👥 Klienten auswählen</h2>
+            <div class="clients-container" id="clientsContainer">
+                <!-- Klienten werden hier geladen -->
+            </div>
+            <div style="text-align: center; margin-top: 30px;">
+                <button id="startSessionBtn" class="start-session-btn" onclick="startSession()" style="display: none;">
+                    🚀 Session starten
+                </button>
+            </div>
+        </div>
+
+        <!-- Coaching Tab -->
+        <div id="coachingTab" class="tab-content">
+            <div class="coaching-layout">
+                <!-- Prompt Repository -->
+                <div class="prompt-repository">
+                    <h3 style="margin-bottom: 20px; color: #1e293b;">🧰 Prompt Repository</h3>
+                    <div class="stats">
+                        <strong id="promptStats">Prompts verfügbar: 0</strong>
+                    </div>
+                    <div>
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600;">Filter nach Kategorie:</label>
+                        <select id="categoryFilter" style="width: 100%; padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; margin-bottom: 15px;">
+                            <option value="">Alle Kategorien</option>
+                        </select>
+                    </div>
+                    <div class="prompts-container" id="promptsContainer">
+                        <!-- Prompts werden hier geladen -->
+                    </div>
+                </div>
+
+                <!-- Prompt Editor -->
+                <div class="prompt-editor">
+                    <h3 style="margin-bottom: 20px; color: #1e293b;">✏️ Prompt Editor</h3>
+                    <textarea id="promptEditor" placeholder="Wählen Sie einen Prompt aus dem Repository oder geben Sie einen eigenen ein..."></textarea>
+                    <div class="editor-actions">
+                        <button class="send-btn" onclick="sendToCollaboration()">📤 An Coachee senden</button>
+                        <button class="send-btn" onclick="openCollaborationWindow()">🔗 Kollaborations-Fenster öffnen</button>
+                        <button onclick="clearEditor()" style="background: #6b7280; color: white;">🗑️ Leeren</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Kollaboration Tab -->
+        <div id="collaborationTab" class="tab-content">
+            <h2 style="margin-bottom: 25px; color: #1e293b;">🤝 Kollaboration Monitor</h2>
+            <div class="collaboration-monitor">
+                <div class="monitor-header">
+                    <span>Status: <span id="connectionStatus">Bereit</span></span>
+                    <button onclick="openCollaborationWindow()" class="open-collab-btn">
+                        🔗 Kollaborations-Fenster öffnen
+                    </button>
+                </div>
+                <div class="collaboration-messages" id="collaborationMessages">
+                    <div style="text-align: center; color: #64748b; padding: 40px;">
+                        Hier sehen Sie den Dialog zwischen Coach und Coachee.<br>
+                        Öffnen Sie das Kollaborations-Fenster für den Coachee.
+                    </div>
+                </div>
+                <div id="collaborationActions" style="display: none;">
+                    <!-- Aktionen werden hier angezeigt -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Coach-KI Tab -->
+        <div id="coachkiTab" class="tab-content">
+            <div class="coachki-container">
+                <h2 style="color: #1e293b; margin-bottom: 25px; display: flex; align-items: center;">
+                    🧠 Coach-KI Kommunikation
+                    <span style="background: #fef3c7; color: #92400e; padding: 0.5rem 1rem; border-radius: 12px; font-size: 0.9rem; margin-left: 15px;">Prozess & Methoden</span>
+                </h2>
+                
+                <!-- Schnellzugriff Bereiche -->
+                <div class="quick-access">
+                    <button onclick="loadProcessSupport()" class="quick-btn process">
+                        ⚙️ Prozess-Support
+                    </button>
+                    <button onclick="loadMethodenBeratung()" class="quick-btn methods">
+                        🛠️ Methoden-Beratung
+                    </button>
+                    <button onclick="loadInterventionshilfe()" class="quick-btn intervention">
+                        🎯 Interventionshilfe
+                    </button>
+                    <button onclick="loadNotfallSupport()" class="quick-btn emergency">
+                        🚨 Notfall-Support
+                    </button>
+                </div>
+
+                <!-- Coach-Eingabe -->
+                <div class="coach-input-section">
+                    <label class="input-label">
+                        💬 Coaching-Situation beschreiben:
+                    </label>
+                    <textarea id="coachInput" placeholder="Beschreiben Sie Ihre aktuelle Coaching-Situation, Herausforderung oder methodische Frage..."></textarea>
+                </div>
+
+                <!-- Kontext-Info -->
+                <div class="context-grid">
+                    <div>
+                        <label class="context-label">Session-Phase:</label>
+                        <select id="sessionPhase" class="context-select">
+                            <option>Phase 1: Problem & Ziel</option>
+                            <option>Phase 2: Analyse</option>
+                            <option>Phase 3: Lösung</option>
+                            <option>Phase 4: Umsetzung</option>
+                            <option>Meta: Prozessreflexion</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="context-label">Coachee-Typ:</label>
+                        <select id="coacheeType" class="context-select">
+                            <option>Führungskraft</option>
+                            <option>Entrepreneur</option>
+                            <option>Übergangsphase</option>
+                            <option>Team/Gruppe</option>
+                            <option>Paar</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="context-label">Dringlichkeit:</label>
+                        <select id="urgency" class="context-select">
+                            <option>Normal</option>
+                            <option>Live-Support</option>
+                            <option>Notfall</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <button onclick="askCoachKI()" class="ask-ki-btn">
+                        🧠 Coach-KI fragen
+                    </button>
+                    <button onclick="clearCoachInput()" class="clear-btn">
+                        🗑️ Leeren
+                    </button>
+                </div>
+
+                <!-- KI-Antwort Bereich -->
+                <div id="coachKIResponse" class="ki-response" style="display: none;">
+                    <h3 class="response-header">
+                        🤖 Coach-KI Empfehlung
+                        <span id="responseCategory" class="response-category"></span>
+                    </h3>
+                    <div id="coachKIResponseContent" class="response-content"></div>
+                    
+                    <!-- Follow-up Aktionen -->
+                    <div id="followUpActions" class="follow-up-actions" style="display: none;">
+                        <button onclick="implementSuggestion()" class="follow-up-btn implement">
+                            ✅ Umsetzen
+                        </button>
+                        <button onclick="getAlternativeAdvice()" class="follow-up-btn alternative">
+                            🔄 Alternative
+                        </button>
+                        <button onclick="deepDive()" class="follow-up-btn deep-dive">
+                            🔍 Vertiefen
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="data/prompts.js"></script>
+    <script src="data/clients.js"></script>
+    <script src="js/communication.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/coach.js"></script>
+</body>
+</html>
